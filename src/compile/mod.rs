@@ -3,6 +3,7 @@ mod tests;
 
 mod assets;
 mod change;
+mod extra_libs;
 mod front;
 mod hash;
 mod sass;

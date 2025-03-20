@@ -31,10 +31,12 @@ impl LibPackage {
         metadata: &Metadata,
         project: &ProjectDefinition,
         config: &ProjectConfig,
+        forced_name: Option<String>,
     ) -> Result<Self> {
-        let name = project.lib_package.clone();
+        let was_name_forced = forced_name.is_some();
+        let name = forced_name.unwrap_or(project.lib_package.clone());
         let packages = metadata.workspace_packages();
-        let output_name = if !config.output_name.is_empty() {
+        let output_name = if !config.output_name.is_empty() && !was_name_forced {
             config.output_name.clone()
         } else {
             name.replace('-', "_")

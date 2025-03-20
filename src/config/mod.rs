@@ -6,6 +6,7 @@ mod bin_package;
 mod cli;
 mod dotenvs;
 mod end2end;
+mod extra_lib_packages;
 mod hash_file;
 mod lib_package;
 mod profile;

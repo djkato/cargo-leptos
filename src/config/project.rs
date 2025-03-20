@@ -1,3 +1,4 @@
+use crate::config::extra_lib_packages::ExtraLibPackages;
 use crate::config::hash_file::HashFile;
 use crate::ext::Paint;
 use crate::internal_prelude::*;
@@ -32,6 +33,7 @@ pub struct Project {
     pub name: String,
     pub lib: LibPackage,
     pub bin: BinPackage,
+    pub extra_libs: ExtraLibPackages,
     pub style: StyleConfig,
     pub watch: bool,
     pub release: bool,
@@ -89,7 +91,8 @@ impl Project {
                 config.output_name = project.name.to_string();
             }
 
-            let lib = LibPackage::resolve(cli, metadata, &project, &config)?;
+            let lib = LibPackage::resolve(cli, metadata, &project, &config, None)?;
+            let extra_libs = ExtraLibPackages::resolve(cli, metadata, &project, &config)?;
 
             let js_dir = config
                 .js_dir
@@ -117,6 +120,7 @@ impl Project {
                 name: project.name.clone(),
                 lib,
                 bin,
+                extra_libs,
                 style: StyleConfig::new(&config)?,
                 watch,
                 release: cli.release,
@@ -359,7 +363,9 @@ pub struct ProjectDefinition {
     name: String,
     pub bin_package: String,
     pub lib_package: String,
+    pub extra_lib_packages: Vec<String>,
 }
+
 impl ProjectDefinition {
     fn from_workspace(
         metadata: &serde_json::Value,
@@ -401,6 +407,7 @@ impl ProjectDefinition {
                 name: package.name.to_string(),
                 bin_package: package.name.to_string(),
                 lib_package: package.name.to_string(),
+                extra_lib_packages: Vec::new(),
             },
             conf,
         ))
